@@ -1,54 +1,93 @@
+/* إعدادات عامة */
 body {
-  font-family: 'Arial', sans-serif;
-  background-color: #f2f2f2;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f3f4f6;
+  color: #111;
 }
 
-.container {
-  background: #fff;
-  padding: 25px;
-  border-radius: 10px;
-  width: 90%;
-  max-width: 400px;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+/* الحاويات */
+.container, .dashboard-container, .send-container,
+.receive-container, .account-container, .assets-container,
+.markets-container, .discover-container {
+  padding: 20px;
+  max-width: 600px;
+  margin: auto;
 }
 
-h2 {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-input, button {
-  display: block;
-  width: 100%;
+/* العناوين */
+h1, h2, h3 {
+  color: #1f2937;
   margin-bottom: 15px;
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
 }
 
+/* الحقول */
+input, select {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0 16px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 16px;
+}
+
+/* الأزرار */
 button {
-  background-color: #0088cc;
+  background-color: #3b82f6;
   color: white;
+  padding: 10px 16px;
   border: none;
+  border-radius: 12px;
+  font-size: 16px;
   cursor: pointer;
+  width: 100%;
+  margin-top: 10px;
 }
 
 button:hover {
-  background-color: #005f88;
+  background-color: #2563eb;
 }
 
-#message {
+/* البطاقات */
+.asset-card, .transfer-record, .market-item, .discover-section {
+  background-color: white;
+  border-radius: 16px;
+  padding: 16px;
+  margin: 12px 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+/* الإشعارات */
+.alert {
+  padding: 12px;
+  background-color: #d1fae5;
+  color: #065f46;
+  border-radius: 10px;
+  margin-top: 10px;
   text-align: center;
-  font-weight: bold;
-  color: green;
 }
 
-.form-group {
+/* تبويبات سفلية */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: white;
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
+  justify-content: space-around;
+  padding: 12px 0;
+  border-top: 1px solid #e5e7eb;
+}
+
+.bottom-nav a {
+  text-decoration: none;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.bottom-nav a.active {
+  color: #3b82f6;
+  font-weight: bold;
 }
