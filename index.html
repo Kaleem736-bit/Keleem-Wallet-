@@ -1,32 +1,230 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Wallet Login</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>محفظتي</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Tahoma, sans-serif;
+      background-color: #f2f2f2;
+      color: #222;
+    }
+    .page {
+      display: none;
+      padding: 20px;
+    }
+    .active-tab {
+      color: #007aff;
+      font-weight: bold;
+    }
+    .bottom-tabs {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background: #fff;
+      display: flex;
+      justify-content: space-around;
+      border-top: 1px solid #ddd;
+    }
+    .tab-button {
+      padding: 10px;
+      flex: 1;
+      text-align: center;
+      cursor: pointer;
+    }
+    .section {
+      background: white;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 12px;
+      box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+    }
+    .input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    .btn {
+      background-color: #007aff;
+      color: white;
+      padding: 10px;
+      width: 100%;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .transfer-item {
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <h2>تسجيل الدخول / إنشاء حساب</h2>
-    <div class="form-group">
-      <input type="radio" id="login" name="mode" value="login" checked>
-      <label for="login">تسجيل الدخول</label>
-      <input type="radio" id="register" name="mode" value="register">
-      <label for="register">إنشاء حساب</label>
+
+  <!-- صفحة تسجيل الدخول -->
+  <div id="page-login" class="page" style="display:block;">
+    <div class="section">
+      <h3>تسجيل الدخول</h3>
+      <input id="login-username" class="input" placeholder="اسم المستخدم" />
+      <input id="login-password" class="input" type="password" placeholder="كلمة المرور" />
+      <button class="btn" id="login-btn">دخول</button>
     </div>
-
-    <form id="authForm">
-      <input type="text" id="email" placeholder="البريد الإلكتروني أو رقم الهاتف" required>
-      <input type="text" id="fullName" placeholder="الاسم الرباعي" style="display: none;">
-      <input type="password" id="password" placeholder="كلمة السر" required>
-      <input type="password" id="confirmPassword" placeholder="تأكيد كلمة السر" style="display: none;">
-      <button type="submit">متابعة</button>
-    </form>
-
-    <div id="message"></div>
   </div>
 
-  <script src="script.js"></script>
+  <!-- صفحة الرئيسية -->
+  <div id="page-home" class="page">
+    <div class="section">
+      <h3>مرحباً، <span id="username">...</span></h3>
+      <p>الرصيد: <strong id="balance">0.00 USDT</strong></p>
+    </div>
+    <div class="section">
+      <h4>إرسال أموال</h4>
+      <input id="send-address" class="input" placeholder="عنوان المستلم" />
+      <input id="send-amount" class="input" placeholder="المبلغ (USDT)" type="number" />
+      <button class="btn" id="send-btn">إرسال</button>
+    </div>
+  </div>
+
+  <!-- صفحة الأصول -->
+  <div id="page-assets" class="page">
+    <div class="section">
+      <h3>أصولي</h3>
+      <ul>
+        <li>USDT - 120.50</li>
+        <li>TRX - 300</li>
+        <li>USDD - 50</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- سجل التحويلات -->
+  <div id="page-transfers" class="page">
+    <div class="section">
+      <h3>سجل التحويلات</h3>
+      <div id="transfer-log"></div>
+    </div>
+  </div>
+
+  <!-- حسابي -->
+  <div id="page-profile" class="page">
+    <div class="section">
+      <h3>معلومات الحساب</h3>
+      <p>الاسم: <span id="username-profile">...</span></p>
+      <p>العنوان: T9xA...zW7</p>
+      <p>الرصيد: <span id="balance-profile">0.00 USDT</span></p>
+      <button class="btn" onclick="logout()">تسجيل الخروج</button>
+    </div>
+  </div>
+
+  <!-- التبويبات -->
+  <div class="bottom-tabs" id="bottom-tabs" style="display:none;">
+    <div class="tab-button active-tab" data-target="home">الرئيسية</div>
+    <div class="tab-button" data-target="assets">الأصول</div>
+    <div class="tab-button" data-target="transfers">التحويلات</div>
+    <div class="tab-button" data-target="profile">حسابي</div>
+  </div>
+
+  <!-- سكربت التفاعل -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const pages = ["home", "assets", "transfers", "profile"];
+      const tabs = document.querySelectorAll(".tab-button");
+
+      function showPage(page) {
+        [...document.querySelectorAll(".page")].forEach(p => p.style.display = "none");
+        document.getElementById("page-" + page).style.display = "block";
+      }
+
+      function checkLogin() {
+        const username = localStorage.getItem("username");
+        if (username) {
+          showPage("home");
+          document.getElementById("bottom-tabs").style.display = "flex";
+          updateUserInfo();
+          renderTransfers();
+        } else {
+          showPage("login");
+        }
+      }
+
+      tabs.forEach(tab => {
+        tab.addEventListener("click", () => {
+          const target = tab.dataset.target;
+          showPage(target);
+          tabs.forEach(t => t.classList.remove("active-tab"));
+          tab.classList.add("active-tab");
+        });
+      });
+
+      document.getElementById("login-btn").addEventListener("click", () => {
+        const username = document.getElementById("login-username").value;
+        const password = document.getElementById("login-password").value;
+        if (username && password.length >= 3) {
+          localStorage.setItem("username", username);
+          localStorage.setItem("balance", "100.00 USDT");
+          checkLogin();
+        } else {
+          alert("يرجى إدخال اسم وكلمة مرور صحيحة");
+        }
+      });
+
+      function updateUserInfo() {
+        const username = localStorage.getItem("username") || "User";
+        const balance = localStorage.getItem("balance") || "0.00 USDT";
+        document.querySelectorAll("#username").forEach(e => e.textContent = username);
+        document.querySelector("#username-profile").textContent = username;
+        document.querySelectorAll("#balance").forEach(e => e.textContent = balance);
+        document.querySelector("#balance-profile").textContent = balance;
+      }
+
+      document.getElementById("send-btn").addEventListener("click", () => {
+        const address = document.getElementById("send-address").value;
+        const amount = document.getElementById("send-amount").value;
+        if (address && amount) {
+          alert(`تم إرسال ${amount} إلى ${address}`);
+          logTransfer("out", amount, address);
+        } else {
+          alert("يرجى تعبئة العنوان والمبلغ");
+        }
+      });
+
+      function logTransfer(type, amount, address) {
+        const now = new Date().toLocaleString();
+        const transfers = JSON.parse(localStorage.getItem("transfers") || "[]");
+        transfers.unshift({ type, amount, address, date: now });
+        localStorage.setItem("transfers", JSON.stringify(transfers));
+        renderTransfers();
+      }
+
+      function renderTransfers() {
+        const log = document.getElementById("transfer-log");
+        log.innerHTML = "";
+        const transfers = JSON.parse(localStorage.getItem("transfers") || "[]");
+        transfers.forEach(t => {
+          const item = document.createElement("div");
+          item.className = "transfer-item";
+          item.innerHTML = `
+            <strong>${t.type === "out" ? "أرسلت" : "استقبلت"} ${t.amount} USDT</strong><br/>
+            <small>${t.date}</small><br/>
+            <small>إلى/من: ${t.address}</small>
+          `;
+          log.appendChild(item);
+        });
+      }
+
+      window.logout = () => {
+        localStorage.clear();
+        location.reload();
+      };
+
+      checkLogin();
+    });
+  </script>
 </body>
-</html>
+    </html>
