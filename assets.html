@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Assets</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="assets-container">
+    <h2>My Assets</h2>
+
+    <div class="asset-card">
+      <h3>USDT</h3>
+      <p>Balance: <span id="usdtBalance">0.00</span> USDT</p>
+    </div>
+
+    <div class="asset-card">
+      <h3>TRX</h3>
+      <p>Balance: <span id="trxBalance">0.00</span> TRX</p>
+    </div>
+
+    <div class="asset-card">
+      <h3>USDD</h3>
+      <p>Balance: <span id="usddBalance">0.00</span> USDD</p>
+    </div>
+
+    <div class="asset-info">
+      <p><strong>Energy:</strong> <span id="energy">1200</span></p>
+      <p><strong>Bandwidth:</strong> <span id="bandwidth">5000</span></p>
+    </div>
+
+    <div class="bottom-nav">
+      <a href="assets.html" class="active">Assets</a>
+      <a href="markets.html">Markets</a>
+      <a href="discover.html">Discover</a>
+      <a href="account.html?user=" id="meTab">Me</a>
+    </div>
+  </div>
+
+  <script>
+    const email = new URLSearchParams(window.location.search).get('user');
+    const user = JSON.parse(localStorage.getItem(email));
+
+    // محاكاة رصيد العملة (يمكن تطويره لاحقًا)
+    document.getElementById('usdtBalance').textContent = (user.balance || 0).toFixed(2);
+    document.getElementById('trxBalance').textContent = ((user.balance || 0) / 10).toFixed(2);
+    document.getElementById('usddBalance').textContent = ((user.balance || 0) / 5).toFixed(2);
+
+    document.getElementById('meTab').href = `account.html?user=${email}`;
+  </script>
+</body>
+</html>
