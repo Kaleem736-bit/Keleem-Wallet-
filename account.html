@@ -1,0 +1,36 @@
+Enter<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Account</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="account-container">
+    <h2>Account Information</h2>
+    <p><strong>Full Name:</strong> <span id="fullName"></span></p>
+    <p><strong>Email / Phone:</strong> <span id="userID"></span></p>
+    <p><strong>Wallet Address:</strong> <span id="walletAddress"></span></p>
+    <p><strong>Registration Date:</strong> <span id="regDate"></span></p>
+    <p><strong>Current Balance:</strong> $<span id="balance"></span> USD</p>
+
+    <button onclick="goBack()">Back to Dashboard</button>
+  </div>
+
+  <script>
+    const email = new URLSearchParams(window.location.search).get('user');
+    const user = JSON.parse(localStorage.getItem(email));
+
+    document.getElementById('fullName').textContent = user.fullname;
+    document.getElementById('userID').textContent = user.email;
+    document.getElementById('walletAddress').textContent = user.wallet;
+    document.getElementById('regDate').textContent = user.registered;
+    document.getElementById('balance').textContent = user.balance.toFixed(2);
+
+    function goBack() {
+      window.location.href = `dashboard.html?user=${email}`;
+    }
+  </script>
+</body>
+</html>
