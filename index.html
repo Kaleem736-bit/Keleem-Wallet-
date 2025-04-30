@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Wallet Login</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h2>تسجيل الدخول / إنشاء حساب</h2>
+    <div class="form-group">
+      <input type="radio" id="login" name="mode" value="login" checked>
+      <label for="login">تسجيل الدخول</label>
+      <input type="radio" id="register" name="mode" value="register">
+      <label for="register">إنشاء حساب</label>
+    </div>
+
+    <form id="authForm">
+      <input type="text" id="email" placeholder="البريد الإلكتروني أو رقم الهاتف" required>
+      <input type="text" id="fullName" placeholder="الاسم الرباعي" style="display: none;">
+      <input type="password" id="password" placeholder="كلمة السر" required>
+      <input type="password" id="confirmPassword" placeholder="تأكيد كلمة السر" style="display: none;">
+      <button type="submit">متابعة</button>
+    </form>
+
+    <div id="message"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
