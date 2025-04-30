@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Discover</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="discover-container">
+    <h2>Discover</h2>
+
+    <div class="discover-section">
+      <h3>Trending DApps</h3>
+      <ul>
+        <li>SunSwap (TRX Exchange)</li>
+        <li>JustLend (TRON Lending)</li>
+        <li>TronLink Wallet Tools</li>
+      </ul>
+    </div>
+
+    <div class="discover-section">
+      <h3>Recommended Tools</h3>
+      <ul>
+        <li>TRC20 Token Tracker</li>
+        <li>Wallet Address Validator</li>
+        <li>TRON Energy Estimator</li>
+      </ul>
+    </div>
+
+    <div class="bottom-nav">
+      <a href="assets.html">Assets</a>
+      <a href="markets.html">Markets</a>
+      <a href="discover.html" class="active">Discover</a>
+      <a href="account.html?user=" id="meTab">Me</a>
+    </div>
+  </div>
+
+  <script>
+    const email = new URLSearchParams(window.location.search).get('user');
+    document.getElementById('meTab').href = `account.html?user=${email}`;
+  </script>
+</body>
+</html>
