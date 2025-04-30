@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Send USDT</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="form-container">
+    <h2>Send USDT</h2>
+
+    <label for="receiver">Recipient Wallet Address:</label>
+    <input type="text" id="receiver" placeholder="Txxxxxxxxxxxxxxxxxxxxx" required>
+
+    <label for="amount">Amount to Send:</label>
+    <input type="number" id="amount" placeholder="e.g. 10.5" required>
+
+    <label for="note">Note (optional):</label>
+    <input type="text" id="note" placeholder="Write a message...">
+
+    <button onclick="sendMoney()">Send</button>
+  </div>
+
+  <script>
+    function getUserEmail() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('user');
+    }
+
+    function sendMoney() {
+      const senderEmail = getUserEmail();
+      const sender = JSON.parse(localStorage.getItem(senderEmail));
+      const receiverAddress = document.getElementById('receiver').value.trim();
+      const amount = parseFloat(document.getElementById('amount').value);
+      const note = document.getElementById('note').value;
+
+      if (!receiverAddress || isNaN(amount) || amount <= 0) {
+        alert("Please enter valid recipient and amount.");
+        return;
+      }
+
+      if (sender.balance < amount) {
+        alert("Insufficient balance.");
+        return;
+      }
+
+      // حفظ سجل التحويل في localStorage
+      const transfers = JSON.parse(localStorage.getItem(senderEmail + "_transfers") || "[]");
+      transfers.push({
+        to: receiverAddress,
+        amount: amount,
+        note: note,
+        date: new Date().toLocaleString()
+      });
+      localStorage.setItem(senderEmail + "_transfers", JSON.stringify(transfers));
+
+      // خصم الرصيد من المرسل
+      sender.balance -= amount;
+      localStorage.setItem(senderEmail, JSON.stringify(sender));
+
+      alert("Transfer successful!");
+      window.location.href = `dashboard.html?user=${senderEmail}`;
+    }
+  </script>
+</body>
+</html>
