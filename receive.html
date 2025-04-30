@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Receive Funds</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="form-container">
+    <h2>Receive Funds</h2>
+
+    <label for="sender">Sender Address:</label>
+    <input type="text" id="sender" placeholder="Txxxxxxxxxxxxxxxxxxxxx" required>
+
+    <label for="receiveAmount">Amount to Receive:</label>
+    <input type="number" id="receiveAmount" placeholder="e.g. 25" required>
+
+    <label for="currency">Currency:</label>
+    <select id="currency">
+      <option value="USDT">USDT</option>
+      <option value="TRX">TRX</option>
+      <option value="USDD">USDD</option>
+    </select>
+
+    <button onclick="receiveFunds()">Receive</button>
+
+    <h3>Receive History</h3>
+    <ul id="receiveList"></ul>
+  </div>
+
+  <script>
+    const email = new URLSearchParams(window.location.search).get('user');
+    const user = JSON.parse(localStorage.getItem(email));
+
+    function receiveFunds() {
+      const sender = document.getElementById('sender').value.trim();
+      const amount = parseFloat(document.getElementById('receiveAmount').value);
+      const currency = document.getElementById('currency').value;
+
+      if (!sender || isNaN(amount) || amount <= 0) {
+        alert("Please enter valid sender and amount.");
+        return;
+      }
+
+      // تحديث الرصيد
+      user.balance += amount;
+      localStorage.setItem(email, JSON.stringify(user));
+
+      // سجل الاستلام
+      const receives = JSON.parse(localStorage.getItem(email + "_receives") || "[]");
+      receives.push({
+        from: sender,
+        amount: amount,
+        currency: currency,
+        date: new Date().toLocaleString()
+      });
+      localStorage.setItem(email + "_receives", JSON.stringify(receives));
+
+      alert(`تم إيداع مبلغ ${amount} ${currency} إلى حسابك بنجاح!`);
+      window.location.reload();
+    }
+
+    function loadReceives() {
+      const receives = JSON.parse(localStorage.getItem(email + "_receives") || "[]");
+      const list = document.getElementById('receiveList');
+      list.innerHTML = "";
+      receives.forEach(r => {
+        const li = document.createElement('li');
+        li.textContent = `From: ${r.from}, Amount: ${r.amount} ${r.currency}, Date: ${r.date}`;
+        list.appendChild(li);
+      });
+    }
+
+    loadReceives();
+  </script>
+</body>
+</html>
