@@ -1,54 +1,61 @@
-body {
-  font-family: 'Arial', sans-serif;
-  background-color: #f2f2f2;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
+document.addEventListener('DOMContentLoaded', () => {
+  const modeRadios = document.querySelectorAll('input[name="mode"]');
+  const form = document.getElementById('authForm');
+  const fullNameInput = document.getElementById('fullName');
+  const confirmPasswordInput = document.getElementById('confirmPassword');
+  const messageDiv = document.getElementById('message');
 
-.container {
-  background: #fff;
-  padding: 25px;
-  border-radius: 10px;
-  width: 90%;
-  max-width: 400px;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-}
+  modeRadios.forEach(radio => {
+    radio.addEventListener('change', () => {
+      const mode = document.querySelector('input[name="mode"]:checked').value;
+      fullNameInput.style.display = mode === 'register' ? 'block' : 'none';
+      confirmPasswordInput.style.display = mode === 'register' ? 'block' : 'none';
+    });
+  });
 
-h2 {
-  text-align: center;
-  margin-bottom: 20px;
-}
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const mode = document.querySelector('input[name="mode"]:checked').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
 
-input, button {
-  display: block;
-  width: 100%;
-  margin-bottom: 15px;
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-}
+    if (mode === 'register') {
+      const fullName = fullNameInput.value;
+      const confirmPassword = confirmPasswordInput.value;
 
-button {
-  background-color: #0088cc;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
+      if (password !== confirmPassword) {
+        messageDiv.textContent = 'كلمة السر غير متطابقة';
+        messageDiv.style.color = 'red';
+        return;
+      }
 
-button:hover {
-  background-color: #005f88;
-}
+      localStorage.setItem(email, JSON.stringify({ fullName, password, balance: 0, wallet: generateWallet() }));
+      messageDiv.textContent = 'تم تسجيل حسابك بنجاح';
+      messageDiv.style.color = 'green';
+      setTimeout(() => window.location.href = 'dashboard.html?user=' + email, 1000);
+    } else {
+      const userData = localStorage.getItem(email);
+      if (!userData) {
+        messageDiv.textContent = 'الحساب غير موجود';
+        messageDiv.style.color = 'red';
+        return;
+      }
 
-#message {
-  text-align: center;
-  font-weight: bold;
-  color: green;
-}
+      const user = JSON.parse(userData);
+      if (user.password !== password) {
+        messageDiv.textContent = 'كلمة السر غير صحيحة';
+        messageDiv.style.color = 'red';
+        return;
+      }
 
-.form-group {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
-}
+      messageDiv.textContent = 'تم تسجيل الدخول بنجاح';
+      messageDiv.style.color = 'green';
+      setTimeout(() => window.location.href = 'dashboard.html?user=' + email, 1000);
+    }
+  });
+
+  function generateWallet() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789';
+    return 'T' + Array.from({ length: 33 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+  }
+});
