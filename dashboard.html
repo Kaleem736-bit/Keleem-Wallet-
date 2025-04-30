@@ -1,61 +1,101 @@
-document.addEventListener('DOMContentLoaded', () => {
-  const modeRadios = document.querySelectorAll('input[name="mode"]');
-  const form = document.getElementById('authForm');
-  const fullNameInput = document.getElementById('fullName');
-  const confirmPasswordInput = document.getElementById('confirmPassword');
-  const messageDiv = document.getElementById('message');
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Wallet Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body onload="loadUserData()">
+  <div class="wallet-header">
+    <h2 id="walletName">Walletkaboo</h2>
+    <p id="network">Nile Testnet</p>
+  </div>
 
-  modeRadios.forEach(radio => {
-    radio.addEventListener('change', () => {
-      const mode = document.querySelector('input[name="mode"]:checked').value;
-      fullNameInput.style.display = mode === 'register' ? 'block' : 'none';
-      confirmPasswordInput.style.display = mode === 'register' ? 'block' : 'none';
-    });
-  });
+  <div class="wallet-card">
+    <h3 id="usdBalance">$0.00</h3>
+    <p id="trxBalance">0 TRX</p>
+    <p id="walletAddress">Txxxxxxxxxxxxxxxxxxxxxxxxxxxx</p>
+    <div class="power-band">
+      <span>Energy<br>0/0</span>
+      <span>Bandwidth<br>0/0</span>
+    </div>
+  </div>
 
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const mode = document.querySelector('input[name="mode"]:checked').value;
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
+  <div class="wallet-actions">
+    <button onclick="goTo('send.html')">Send</button>
+    <button onclick="goTo('receive.html')">Receive</button>
+    <button>Vote</button>
+    <button>Stake</button>
+  </div>
 
-    if (mode === 'register') {
-      const fullName = fullNameInput.value;
-      const confirmPassword = confirmPasswordInput.value;
+  <div class="assets">
+    <h3>Assets</h3>
+    <div class="asset">
+      <img src="https://cryptologos.cc/logos/tron-trx-logo.png" alt="TRX" />
+      <div>
+        <strong>TRX</strong>
+        <p>$0.244419</p>
+      </div>
+      <div class="asset-value">
+        <p id="trxAmount">0</p>
+        <p>$0</p>
+      </div>
+    </div>
+    <div class="asset">
+      <img src="https://cryptologos.cc/logos/usdd-usdd-logo.png" alt="USDD" />
+      <div>
+        <strong>USDD</strong>
+        <p>$1.00</p>
+      </div>
+      <div class="asset-value">
+        <p id="usddAmount">0</p>
+        <p>$0</p>
+      </div>
+    </div>
+    <div class="asset">
+      <img src="https://cryptologos.cc/logos/tether-usdt-logo.png" alt="USDT" />
+      <div>
+        <strong>USDT</strong>
+        <p>$0.999607</p>
+      </div>
+      <div class="asset-value">
+        <p id="usdtAmount">1000</p>
+        <p id="usdtValue">$999.607</p>
+      </div>
+    </div>
+  </div>
 
-      if (password !== confirmPassword) {
-        messageDiv.textContent = 'كلمة السر غير متطابقة';
-        messageDiv.style.color = 'red';
-        return;
-      }
+  <div class="tabs">
+    <button class="active">Assets</button>
+    <button>Markets</button>
+    <button>Discover</button>
+    <button onclick="goTo('account.html')">Me</button>
+  </div>
 
-      localStorage.setItem(email, JSON.stringify({ fullName, password, balance: 0, wallet: generateWallet() }));
-      messageDiv.textContent = 'تم تسجيل حسابك بنجاح';
-      messageDiv.style.color = 'green';
-      setTimeout(() => window.location.href = 'dashboard.html?user=' + email, 1000);
-    } else {
-      const userData = localStorage.getItem(email);
-      if (!userData) {
-        messageDiv.textContent = 'الحساب غير موجود';
-        messageDiv.style.color = 'red';
-        return;
-      }
-
-      const user = JSON.parse(userData);
-      if (user.password !== password) {
-        messageDiv.textContent = 'كلمة السر غير صحيحة';
-        messageDiv.style.color = 'red';
-        return;
-      }
-
-      messageDiv.textContent = 'تم تسجيل الدخول بنجاح';
-      messageDiv.style.color = 'green';
-      setTimeout(() => window.location.href = 'dashboard.html?user=' + email, 1000);
+  <script>
+    function getUserEmail() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('user');
     }
-  });
 
-  function generateWallet() {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789';
-    return 'T' + Array.from({ length: 33 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
-  }
-});
+    function goTo(page) {
+      const email = getUserEmail();
+      window.location.href = `${page}?user=${email}`;
+    }
+
+    function loadUserData() {
+      const email = getUserEmail();
+      const user = JSON.parse(localStorage.getItem(email));
+      if (!user) return;
+
+      document.getElementById('walletAddress').innerText = user.wallet;
+      document.getElementById('trxBalance').innerText = `${user.balance} TRX`;
+      document.getElementById('usdBalance').innerText = `$${(user.balance * 0.244419).toFixed(3)}`;
+      document.getElementById('trxAmount').innerText = user.balance;
+      document.getElementById('usdtAmount').innerText = "1000";
+      document.getElementById('usdtValue').innerText = "$999.607";
+    }
+  </script>
+</body>
+</html>
