@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Markets</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="markets-container">
+    <h2>Markets</h2>
+
+    <div class="market-item">
+      <h3>USDT/TRX</h3>
+      <p>Exchange Rate: 1 USDT = 10 TRX</p>
+    </div>
+
+    <div class="market-item">
+      <h3>USDD/USDT</h3>
+      <p>Exchange Rate: 1 USDD = 0.98 USDT</p>
+    </div>
+
+    <div class="market-item">
+      <h3>TRX/USDD</h3>
+      <p>Exchange Rate: 1 TRX = 0.2 USDD</p>
+    </div>
+
+    <div class="bottom-nav">
+      <a href="assets.html">Assets</a>
+      <a href="markets.html" class="active">Markets</a>
+      <a href="discover.html">Discover</a>
+      <a href="account.html?user=" id="meTab">Me</a>
+    </div>
+  </div>
+
+  <script>
+    const email = new URLSearchParams(window.location.search).get('user');
+    document.getElementById('meTab').href = `account.html?user=${email}`;
+  </script>
+</body>
+</html>
